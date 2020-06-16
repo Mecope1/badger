@@ -617,10 +617,11 @@ func (t *Table) blockCacheKey(idx int) []byte {
 // blockOffsetsCacheKey returns the cache key for block offsets.
 func (t *Table) blockOffsetsCacheKey() []byte {
 	y.AssertTrue(t.id < math.MaxUint32)
-	buf := make([]byte, 4, 6)
-	binary.BigEndian.PutUint32(buf, uint32(t.id))
-
-	return append([]byte("bo"), buf...)
+	buf := make([]byte, 6)
+	buf[0] = 'b'
+	buf[1] = 'o'
+	binary.BigEndian.PutUint32(buf[2:], uint32(t.id))
+	return buf
 }
 
 // EstimatedSize returns the total size of key-values stored in this table (including the
