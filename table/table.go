@@ -596,11 +596,13 @@ func (t *Table) block(idx int) (*block, error) {
 // bfCacheKey returns the cache key for bloom filter.
 func (t *Table) bfCacheKey() []byte {
 	y.AssertTrue(t.id < math.MaxUint32)
-	buf := make([]byte, 4)
-	binary.BigEndian.PutUint32(buf, uint32(t.id))
-
+	buf := make([]byte, 6)
 	// Without the "bf" prefix, we will have conflict with the blockCacheKey.
-	return append([]byte("bf"), buf...)
+	buf[0] = 'b'
+	buf[1] = 'f'
+
+	binary.BigEndian.PutUint32(buf[2:], uint32(t.id))
+	return buf
 }
 
 func (t *Table) blockCacheKey(idx int) []byte {
@@ -620,6 +622,7 @@ func (t *Table) blockOffsetsCacheKey() []byte {
 	buf := make([]byte, 6)
 	buf[0] = 'b'
 	buf[1] = 'o'
+
 	binary.BigEndian.PutUint32(buf[2:], uint32(t.id))
 	return buf
 }
